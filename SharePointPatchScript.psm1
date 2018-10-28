@@ -68,12 +68,18 @@ Function Install-SPPatch
 
     if($majorVersion -eq '16')
     {
-        $sts = Get-ChildItem -LiteralPath $Path | ?{$_.Name -match 'sts([A-Za-z0-9\-]+).exe'}
-        $wssloc = Get-ChildItem -LiteralPath $Path | ?{$_.Name -match 'wssloc([A-Za-z0-9\-]+).exe'}
+        $sts = Get-ChildItem -LiteralPath $Path  -Filter *.exe  | ?{$_.Name -match 'sts([A-Za-z0-9\-]+).exe'}
+        $wssloc = Get-ChildItem -LiteralPath $Path  -Filter *.exe  | ?{$_.Name -match 'wssloc([A-Za-z0-9\-]+).exe'}
+
+        if($sts -eq $null -and $wssloc -eq $null)
+        {
+            Write-Host 'Missing the sts and wssloc patch. Please make sure both patches are present in the same directory.' -ForegroundColor Red
+            return
+        }
 
         if($sts -eq $null -or $wssloc -eq $null)
         {
-            Write-Host 'Missing the sts or wssloc patch. Please make sure both patches are present in the same directory.' -ForegroundColor Red
+            Write-Host '[Warning] Either the sts and wssloc patch is not available. Please make sure both patches are present in the same directory or safely ignore if only single patch is available.' -ForegroundColor Yellow
             return
         }
 
@@ -82,7 +88,7 @@ Function Install-SPPatch
     }
     elseif ($majorVersion -eq '15')
     {
-        $patchfiles = Get-ChildItem -LiteralPath $Path | ?{$_.Name -match '([A-Za-z0-9\-]+)2013-kb([A-Za-z0-9\-]+)glb.exe'}
+        $patchfiles = Get-ChildItem -LiteralPath $Path  -Filter *.exe  | ?{$_.Name -match '([A-Za-z0-9\-]+)2013-kb([A-Za-z0-9\-]+)glb.exe'}
         
         if($patchfiles -eq $null) 
         { 
