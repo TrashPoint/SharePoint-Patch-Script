@@ -60,6 +60,7 @@ Function Install-SPPatch
     $version = (Get-SPFarm).BuildVersion
     $majorVersion = $version.Major
     $startTime = Get-Date
+    $exitRebootCodes = @(3010,17022)
     Write-Host -ForegroundColor Green "Current build: $version"
 
     ########################### 
@@ -192,7 +193,7 @@ Function Install-SPPatch
             $process = Start-Process $filename -ArgumentList '/norestart' -PassThru -Wait
         }
 
-        if($process.ExitCode -eq '3010')
+        if($exitRebootCodes.Contains($process.ExitCode))
         {
             $reboot = $true
         }
