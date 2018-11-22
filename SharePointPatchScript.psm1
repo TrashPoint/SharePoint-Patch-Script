@@ -61,6 +61,8 @@ Function Install-SPPatch
     $majorVersion = $version.Major
     $startTime = Get-Date
     $exitRebootCodes = @(3010,17022)
+    $searchSvcRunning = $false
+    
     Write-Host -ForegroundColor Green "Current build: $version"
 
     ########################### 
@@ -108,8 +110,9 @@ Function Install-SPPatch
     $oSearchSvc = Get-Service "OSearch$majorVersion" 
     $sPSearchHCSvc = Get-Service "SPSearchHostController"
 
-    if(($oSearchSvc.status -eq 'Running') -or ($sPSearchHCSvc.status-eq 'Running')) 
+    if(($oSearchSvc.status -eq 'Running') -or ($sPSearchHCSvc.status -eq 'Running')) 
     { 
+        $searchSvcRunning = $true
         if($Pause) 
         { 
             $ssas = Get-SPEnterpriseSearchServiceApplication
@@ -130,7 +133,6 @@ Function Install-SPPatch
     #We don't need to stop SharePoint Services for 2016 and above
     if($majorVersion -lt '16')
     {
-
         Write-Host -ForegroundColor Yellow 'Stopping Search Services if they are running'
 
         if($oSearchSvc.status -eq 'Running') 
@@ -220,7 +222,7 @@ Function Install-SPPatch
         Start-Service 'IISAdmin'
 
         ###Ensuring Search Services were stopped by script before Starting" 
-        if($Stop -or $Pause) 
+        if($searchSvcRunning = $true) 
         { 
             Set-Service -Name "OSearch$majorVersion" -StartupType Manual 
             Start-Service "OSearch$majorVersion" -WA 0
