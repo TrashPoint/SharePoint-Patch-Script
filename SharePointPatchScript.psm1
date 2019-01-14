@@ -1,13 +1,13 @@
  <#
-    Updated for SharePoint Server 2016 by Trevor Seward (https://thesharepointfarm.com). Original 
+    Updated for SharePoint Server 2016 and 2019 by Trevor Seward (https://thesharepointfarm.com). Original 
     script provided by Russ Maxwell, available for SharePoint 2013 from 
     https://blogs.msdn.microsoft.com/russmax/2013/04/01/why-sharepoint-2013-cumulative-update-takes-5-hours-to-install/.
 
-    This script supports both SharePoint 2013 as well as SharePoint Server 2016. SharePoint Server 2016 supports both the
+    This script supports both SharePoint 2013, SharePoint Server 2016, and SharePoint Server 2019. SharePoint Server 2016/2019 supports both the
     sts*.exe and wssloc*.exe in the same directory.
  
-    Version: 1.0.2
-    Release Date: 03/15/2017
+    Version: 1.0.3
+    Release Date: 01/14/2019
     License: MIT (https://github.com/Nauplius/SharePoint-Patch-Script/blob/master/LICENSE)
  #>
 
@@ -29,11 +29,13 @@ Add-PSSnapin Microsoft.SharePoint.PowerShell -EA Stop
         Silently installs the patches without user input. Not specifying this parameter will cause each patch to prompt to install.
     .PARAMETER Resume
         Resumes and Starts the Search Service Application and Services. Default is true.
+    .PARAMTER OnlySTS
+        Only apply the STS patch. This switch may be used when only an STS patch is available.
     .EXAMPLE
         Install-SPPatch -Path C:\Updates -Pause -SilentInstall
     .NOTES
         Author: Trevor Seward
-        Date: 02/23/2017
+        Date: 01/14/2019
         https://thesharepointfarm.com
         https://github.com/Nauplius
 
@@ -54,7 +56,10 @@ Function Install-SPPatch
         $Stop,
         [switch]
         [Parameter(Mandatory=$false)]
-        $SilentInstall
+        $SilentInstall,
+        [switch]
+        [Parameter(Mandatory=$false)]
+        $OnlySTS
     )
 
     $version = (Get-SPFarm).BuildVersion
@@ -73,21 +78,40 @@ Function Install-SPPatch
     {
         $sts = Get-ChildItem -LiteralPath $Path  -Filter *.exe  | ?{$_.Name -match 'sts([A-Za-z0-9\-]+).exe'}
         $wssloc = Get-ChildItem -LiteralPath $Path  -Filter *.exe  | ?{$_.Name -match 'wssloc([A-Za-z0-9\-]+).exe'}
-
-        if($sts -eq $null -and $wssloc -eq $null)
+        
+        if($OnlySTS)
         {
-            Write-Host 'Missing the sts and wssloc patch. Please make sure both patches are present in the same directory.' -ForegroundColor Red
-            return
+            if($sts -eq $null)
+            {
+                Write-Host 'Missing the sts patch. Please make sure the sts patch present in the specified directory.' -ForegroundColor Red
+                return            
+            }
         }
-
-        if($sts -eq $null -or $wssloc -eq $null)
+        else
         {
-            Write-Host '[Warning] Either the sts and wssloc patch is not available. Please make sure both patches are present in the same directory or safely ignore if only single patch is available.' -ForegroundColor Yellow
-            return
-        }
+            if($sts -eq $null -and $wssloc -eq $null)
+            {
+                Write-Host 'Missing the sts and wssloc patch. Please make sure both patches are present in the specified directory.' -ForegroundColor Red
+                return
+            }
 
-        $patchfiles = $sts, $wssloc
-        Write-Host -for Yellow "Installing $sts and $wssloc"
+            if($sts -eq $null -or $wssloc -eq $null)
+            {
+                Write-Host '[Warning] Either the sts and wssloc patch is not available. Please make sure both patches are present in the same directory or safely ignore if only single patch is available.' -ForegroundColor Yellow
+                return
+            }
+         }
+
+        if($OnlySTS)
+        {
+            $patchfiles = $sts
+            Write-Host -for Yellow "Installing $sts"
+        }
+        else
+        {
+            $patchfiles = $sts, $wssloc
+            Write-Host -for Yellow "Installing $sts and $wssloc"
+        }
     }
     elseif ($majorVersion -eq '15')
     {
