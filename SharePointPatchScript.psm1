@@ -209,6 +209,8 @@ Function Install-SPPatch
     foreach($patchfile in $patchfiles)
     {
         $filename = $patchfile.Fullname
+        #unblock the file, to get rid of the prompts
+        Unblock-File -Path $filename -Confirm:$false
 
         if($SilentInstall)
         {
