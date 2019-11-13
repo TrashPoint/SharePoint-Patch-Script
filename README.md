@@ -25,6 +25,7 @@ Upcoming features include:
 * `-SilentInstall` includes the arguments `/passive /quiet`. This prevents any of the patch UI from appearing (useful to patch as quickly as possible without user intervention)
 * `-Pause` pauses the Search Service Application(s) prior to stopping the Search Services.
 * `-Stop` simply stops the Search Services without pausing the Search Service Application (applies to SharePoint Server 2013 only).
+* `-Resume` allows you to specify to not resume/start the Search Service Application after the script completes. This is useful for multi-server farms. Defaults to true.
 * `-OnlySTS` apply an STS patch only. Useful in cases where a WSSLOC patch isn't available for a given month (applies to SharePoint Server 2016 and 2019 only).
 
 `-Pause` and `-Stop` are mutually exclusive.
