@@ -56,6 +56,9 @@ Function Install-SPPatch
         $Stop,
         [switch]
         [Parameter(Mandatory=$false)]
+        $Resume = $true,
+        [switch]
+        [Parameter(Mandatory=$false)]
         $SilentInstall,
         [switch]
         [Parameter(Mandatory=$false)]
@@ -258,7 +261,7 @@ Function Install-SPPatch
     }
 
     ###Resuming Search Service Application if paused### 
-    if($Pause) 
+    if($Pause -and $Resume) 
     { 
         $ssas = Get-SPEnterpriseSearchServiceApplication
 
@@ -268,6 +271,10 @@ Function Install-SPPatch
             Write-Host -ForegroundColor Yellow '    This could take a few minutes...'
             Resume-SPEnterpriseSearchServiceApplication -Identity $ssa | Out-Null
         }
+    }
+    elseif($pause -and -not $Resume)
+    {
+        Write-Host -ForegroundColor Yellow 'Not resuming the Search Service Application'
     }
 
     ###Resuming IIS###
