@@ -1,33 +1,17 @@
 # SharePoint Patch Script
+
 An updated version of Russ Maxwell's "5 hour" SharePoint Patch Script supporting SharePoint 2013, SharePoint 2016, and SharePoint 2019. Original created for SharePoint 2013 by Russ Maxwell, this script has been updated with a few new features:
 
 * Support for SharePoint 2019, SharePoint 2016, and SharePoint 2013 in the same script
 * Support for multiple patch files for both platforms
 * Support for pausing/stopping multiple SharePoint Search Service Applications
 * It's now a module!
-
-Upcoming features include:
-
-* Disable resuming of Search (this would be useful in patching multiple SharePoint servers)
-* Better information on what the script is doing
+* Retrieve patch metadata from [SharePoint Updates](https://sharepointupdates.com)
+* Download patches from the Microsoft Download Center
+* Run the Configuration Wizard (psconfig.exe) with all of the appropriate parameters
 
 **Usage:**
 
-`Import-Module .\SharePointPatchScript.psm1`
-* You can also drop the psm1 file in your modules directory, by default it is located at `C:\Users\<username>\Documents\WindowsPowerShell\Modules`
+See the [wiki](https://github.com/Nauplius/SharePoint-Patch-Script/wiki).
 
-**Example:**
-
-`Install-SPPatch -Path C:\Patches -Pause -SilentInstall`
-
-**Reference:**
-* `-Path` is an absolute path to the folder location of the patches
-* `-SilentInstall` includes the arguments `/passive /quiet`. This prevents any of the patch UI from appearing (useful to patch as quickly as possible without user intervention)
-* `-Pause` pauses the Search Service Application(s) prior to stopping the Search Services.
-* `-Stop` simply stops the Search Services without pausing the Search Service Application (applies to SharePoint Server 2013 only).
-* `-Resume` allows you to specify to not resume/start the Search Service Application after the script completes. This is useful for multi-server farms. Defaults to true.
-* `-OnlySTS` apply an STS patch only. Useful in cases where a WSSLOC patch isn't available for a given month (applies to SharePoint Server 2016 and 2019 only).
-
-`-Pause` and `-Stop` are mutually exclusive.
-
-Russ Maxwell's original script is available at https://blogs.msdn.microsoft.com/russmax/2013/04/01/why-sharepoint-2013-cumulative-update-takes-5-hours-to-install/.
+Russ Maxwell's original script is available at https://blog.russmax.com/why-sharepoint-2013-cumulative-update-takes-5-hours-to-install/.
