@@ -8,10 +8,10 @@ An updated version of Russ Maxwell's "5 hour" SharePoint Patch Script supporting
 * It's now a module!
 * Retrieve patch metadata from [SharePoint Updates](https://sharepointupdates.com)
 * Download patches from the Microsoft Download Center
-* Run the Configuration Wizard (psconfig.exe) with all of the appropriate parameters
+* Run the Configuration Wizard (`psconfig.exe`) with all of the appropriate parameters
 
 **Usage:**
 
 See the [wiki](https://github.com/Nauplius/SharePoint-Patch-Script/wiki).
 
-Russ Maxwell's original script is available at https://blog.russmax.com/why-sharepoint-2013-cumulative-update-takes-5-hours-to-install/.
+Russ Maxwell's original script is available at [Why SharePoint 2013 Cumulative Update takes 5 hours to install?](https://blog.russmax.com/why-sharepoint-2013-cumulative-update-takes-5-hours-to-install/).

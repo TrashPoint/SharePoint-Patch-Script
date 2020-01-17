@@ -9,6 +9,8 @@
     License: MIT (https://github.com/Nauplius/SharePoint-Patch-Script/blob/master/LICENSE)
 #>
 
+Add-PSSnapin Microsoft.SharePoint.PowerShell -EA Continue
+
 <#
     .SYNOPSIS
         Get-SPPatchInfo retrieves information about a knowledge base article or build number.
